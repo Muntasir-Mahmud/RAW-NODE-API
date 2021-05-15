@@ -2,6 +2,7 @@
 /* eslint-disable prettier/prettier */
 // dependencies
 const { hash } = require('../../helpers/utilities');
+const { parseJSON } = require('../../helpers/utilities');
 const data = require('../../lib/data');
 
 // module scaffolding
@@ -37,6 +38,7 @@ handler._users.post = (requestProperties, callback) => {
         && requestProperties.body.phone.trim().length > 0
             ? requestProperties.body.phone
             : false;
+
     const tosAgreement = typeof requestProperties.body.tosAgreement === 'boolean'
         && requestProperties.body.tosAgreement
             ? requestProperties.body.tosAgreement
@@ -79,7 +81,29 @@ handler._users.post = (requestProperties, callback) => {
 };
 
 handler._users.get = (requestProperties, callback) => {
-    callback(200);
+    // check the phone number is valid
+    const phone = typeof requestProperties.querystringObject.phone === 'string'
+        && requestProperties.querystringObject.phone.trim().length === 11
+            ? requestProperties.querystringObject.phone
+            : false;
+    if (phone) {
+        // Look up the user
+        data.read('users', phone, (err, u) => {
+            const user = { ...parseJSON(u) };
+            if (!err && u) {
+                delete user.password;
+                callback(200, user);
+            } else {
+                callback(404, {
+                    error: 'User was not found!',
+        });
+            }
+        });
+    } else {
+        callback(404, {
+            error: 'Requested user was not found!',
+        });
+    }
 };
 
 // handler._users.put = (requestProperties, callback) => {};
