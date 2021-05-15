@@ -177,9 +177,9 @@ handler._users.put = (requestProperties, callback) => {
 
 handler._users.delete = (requestProperties, callback) => {
     // check the phone number if valid
-    const phone = typeof requestProperties.queryStringObject.phone === 'string'
-        && requestProperties.queryStringObject.phone.trim().length === 11
-            ? requestProperties.queryStringObject.phone
+    const phone = typeof requestProperties.body.phone === 'string'
+        && requestProperties.body.phone.trim().length === 11
+            ? requestProperties.body.phone
             : false;
 
     if (phone) {
@@ -209,5 +209,4 @@ handler._users.delete = (requestProperties, callback) => {
         });
     }
 };
-// handler._users.delete = (requestProperties, callback) => {};
 module.exports = handler;
