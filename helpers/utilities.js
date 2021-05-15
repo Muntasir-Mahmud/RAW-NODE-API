@@ -7,6 +7,8 @@
  */
 
 // dependencies
+const crypto = require('crypto');
+const environments = require('./environments');
 
 // module scaffholding
 const utilities = {};
@@ -22,6 +24,19 @@ utilities.parseJSON = (jsonString) => {
     }
 
     return output;
+};
+
+// hash staring
+utilities.hash = (hashString) => {
+    if (typeof hashString === 'string' && hashString.length > 0) {
+        const hash = crypto
+            .createHash('sha256', environments.sectetKey)
+            .update(hashString)
+            .digest('hex');
+
+        return hash;
+    }
+    return false;
 };
 
 // export module
